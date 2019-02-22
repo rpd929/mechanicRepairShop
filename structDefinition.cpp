@@ -10,9 +10,6 @@
 
 using namespace std;
 
-
-
-
 struct Vehicle{
     
     std::string type;
@@ -79,6 +76,7 @@ std::vector<std::string> split(std::string strToSplit, char delimeter)
     }
     return splittedStrings;
 }
+
 
 vector<Treatment> createFixes(vector<string> allFixesStringVector) {
 
@@ -189,24 +187,26 @@ vector<string> readMechanics(string mechanicsFile){
     inDataStream.open(mechanicsFile);
     
     inDataStream >> buffer;
-    
-    while(buffer.find(delimiter) == notFound)
-    {
-        if(unfinishedData.empty())
+    while (inDataStream.good())
+    {      while(buffer.find(delimiter) == notFound)
         {
-            unfinishedData = buffer;
-            buffer.clear();
-        } else {
-            unfinishedData = unfinishedData + " " + buffer;
-            buffer.clear();
+            if(unfinishedData.empty())
+            {
+                unfinishedData = buffer;
+                buffer.clear();
+            } else {
+                unfinishedData = unfinishedData + " " + buffer;
+                buffer.clear();
+            }
+            inDataStream >> buffer;
         }
-        inDataStream >> buffer;
-    }
         string finishedData = unfinishedData + " " + buffer;
         allMechanicsStringVector.push_back(finishedData);
         finishedData.clear();
         unfinishedData.clear();
-        
+        inDataStream >> buffer;
+
+    }
   
     return allMechanicsStringVector;
 }
@@ -438,7 +438,8 @@ bool attemptFix(bool diagnosisStatus, Mechanic assignedMechanic, Problem vehicle
             chanceOfSuccess = 70 + (skillGap - 10);
         }
         
-        randomInt = rand() * 100;
+        randomInt = rand() % 100;
+         cout << "chance: " << chanceOfSuccess << " vs Random: " << randomInt << endl;
        
         if (chanceOfSuccess > randomInt) {
             cout << "They were able to successfully apply a fix. " << endl;
@@ -457,23 +458,20 @@ bool attemptFix(bool diagnosisStatus, Mechanic assignedMechanic, Problem vehicle
             chanceOfSuccess = 70 + skillGap;
         } else {
             
-            chanceOfSuccess = 70 + (skillGap - 10);
+        chanceOfSuccess = 70 + (skillGap - 10);
         }
         
         chanceOfSuccess = chanceOfSuccess * 0.25;
-        randomInt = rand() * 100;
+        randomInt = rand() % 100;
+        cout << "chance: " << chanceOfSuccess << " vs Random: " << randomInt << endl;
         
         if (chanceOfSuccess > randomInt) {
             cout << "They were able to successfully apply a fix. " << endl;
             return true;
         } else {
             cout << "They were not able to successfully apply a fix." << endl;
-           
             return false;
         }
-        
-        
-        
     }
     
    
@@ -481,30 +479,6 @@ bool attemptFix(bool diagnosisStatus, Mechanic assignedMechanic, Problem vehicle
     
     
 
-}
-
-
-void  reportResults(currentVehicleWork currentJob) {
-    
-    string report;
-    
-    report = "Vehicle: " + currentJob.currentVehicle.plate + " ";
-    report = report + "Has the problem: " + currentJob.vehicleProblem.name;
-    
-    if(currentJob.diagnosis == true)
-    {   report = report + " which was diagnosed ";
-    
-        report = report + "as: " + currentJob.diagnosedProblem.name;
-        
- 
-
-    }
-   
-        
-   
-    
-    
-    
 }
     
     
